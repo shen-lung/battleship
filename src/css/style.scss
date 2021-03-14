@@ -1,3 +1,6 @@
+$ship-body-color: #bebebe;
+$ship-border-color: #7c7c7c;
+
 body {
     background-color: #eeeeee;
     margin: 0;
@@ -8,4 +11,75 @@ body {
 .button_section {
     position: absolute;
     top: 50%;
+}
+
+.App {
+    text-align: center;
+    width: 95%;
+    margin: 15px auto;
+}
+
+.ship-section {
+    width: 440px;
+    height: 440px;
+    background-color: #EEEEEE;
+}
+
+.ship-board {
+    width: 440px;
+    height: 440px;
+    background-color: #EEEEEE;
+}
+
+.ship-section--space {
+    margin: 20px 0 !important;
+}
+
+.ship-section--space-section {
+    margin-right: 20px !important;
+}
+
+.draggable {
+    width: 100px;
+    height: 100px;
+    background-color: yellow;
+    margin: 5px auto;
+    line-height: 5em;
+}
+
+.draggable:focus {
+    width: 100px;
+    height: 100px;
+    background-color: yellow;
+    margin: 5px auto;
+    line-height: 5em;
+}
+
+.header-title {
+    margin: 60px 0 !important;
+}
+
+.ship-four {
+    height: 40px;
+    width: 160px;
+    background-color: $ship-body-color;
+    border: 1px solid $ship-border-color;
+}
+.ship-three {
+    height: 40px;
+    width: 120px;
+    background-color: $ship-body-color;
+    border: 1px solid $ship-border-color;
+}
+.ship-two {
+    height: 40px;
+    width: 80px;
+    background-color: $ship-body-color;
+    border: 1px solid $ship-border-color;
+}
+.ship-one {
+    height: 40px;
+    width: 40px;
+    background-color: $ship-body-color;
+    border: 1px solid $ship-border-color;
 }
