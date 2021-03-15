@@ -1,11 +1,36 @@
 $ship-body-color: #bebebe;
 $ship-border-color: #7c7c7c;
+$text-color: #e2e2e2;
 
 body {
-    background-color: #eeeeee;
+    background-color: $text-color;
     margin: 0;
     padding: 0;
     background-image: url("/src/image/battle-1920x1080.jpg");
+}
+
+.button {
+    margin-bottom: 30px !important;
+}
+
+.button-random {
+    margin-top: 68px !important;
+}
+
+.player-board {
+    background-color: #1d1d1d;
+    border: 1px solid #afbaff;
+    height: 410px;
+    margin-left: 44px !important;
+    width: 410px;
+}
+
+.ship-cell {
+    border-right: 1px solid #8DEEEE;
+    display: inline-block;
+    height: 39px;
+    margin-bottom: -4px;
+    width: 39px;
 }
 
 .button_section {
@@ -13,21 +38,16 @@ body {
     top: 50%;
 }
 
-.App {
-    text-align: center;
-    width: 95%;
-    margin: 15px auto;
-}
-
 .ship-section {
-    width: 440px;
-    height: 440px;
     background-color: #EEEEEE;
+    height: 400px;
+    margin-top: 28px;
+    width: 484px;
 }
 
 .ship-board {
-    width: 440px;
-    height: 440px;
+    width: 484px;
+    height: 400px;
     background-color: #EEEEEE;
 }
 
@@ -37,22 +57,6 @@ body {
 
 .ship-section--space-section {
     margin-right: 20px !important;
-}
-
-.draggable {
-    width: 100px;
-    height: 100px;
-    background-color: yellow;
-    margin: 5px auto;
-    line-height: 5em;
-}
-
-.draggable:focus {
-    width: 100px;
-    height: 100px;
-    background-color: yellow;
-    margin: 5px auto;
-    line-height: 5em;
 }
 
 .header-title {
@@ -71,15 +75,43 @@ body {
     background-color: $ship-body-color;
     border: 1px solid $ship-border-color;
 }
+
 .ship-two {
     height: 40px;
     width: 80px;
     background-color: $ship-body-color;
     border: 1px solid $ship-border-color;
 }
+
 .ship-one {
     height: 40px;
     width: 40px;
     background-color: $ship-body-color;
     border: 1px solid $ship-border-color;
+}
+
+.title {
+    color: $text-color;
+}
+
+.letter-row {
+    color: $text-color;
+    margin-bottom: 10px !important;
+    margin-left: 38px !important;
+    margin-right: 90px !important;
+}
+
+.ship-cell {
+    border-bottom: 1px solid #7c7c7c;
+    border-right: 1px solid #7c7c7c;
+    height: 40px;
+    width: 40px;
+}
+
+.ship-cell__selected {
+    border-bottom: 1px solid #7c7c7c;
+    border-right: 1px solid #7c7c7c;
+    background-color: rgb(0, 255, 255);
+    height: 40px;
+    width: 40px;
 }
