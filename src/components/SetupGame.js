@@ -112,20 +112,28 @@ export default function SetupGame() {
         })
     }
 
-    const handleMouseDown = () => {
-        const ship = shipDetails[currentShip];
-        const shipName = ship.name;
+    const handleMouseClick = () => {
+        const isIdBusy = elemCellList.map((elem) => {
+            const id = Number(elem.getAttribute('shipcellid'));
 
-        elemCellList.map((elem) => {
-            elemCellListId.push(Number(elem.getAttribute('shipcellid')));
+            return elemCellListId.indexOf(id) !== -1;
         })
-        setElemCellListId(elemCellListId);
-        setShipListDown({
-            ...shipListDown,
-            [shipName]: elemCellList
-        });
-        setCurrentShip(++currentShip);
-        setElemList([]);
+
+        if(isIdBusy.indexOf(true) === -1 || !elemCellListId.length) {
+            const ship = shipDetails[currentShip];
+            const shipName = ship.name;
+    
+            elemCellList.map((elem) => {
+                elemCellListId.push(Number(elem.getAttribute('shipcellid')));
+            })
+            setElemCellListId(elemCellListId);
+            setShipListDown({
+                ...shipListDown,
+                [shipName]: elemCellList
+            });
+            setCurrentShip(++currentShip);
+            setElemList([]);
+        }
     }
 
     let flow = (
@@ -163,7 +171,7 @@ export default function SetupGame() {
                 shipcellid={num}
                 onMouseOver={handleMouseOver}
                 onMouseLeave={handleMouseLeave}
-                onMouseDown={handleMouseDown}
+                onMouseDown={handleMouseClick}
             >
             </div>)
         );
