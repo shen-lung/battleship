@@ -12,16 +12,20 @@ import PlayArrow from '@material-ui/icons/PlayArrow';
 
 const setupSection = (handleGameSection) => {
     return (
-        <Grid container item xs={12} justify="center" alignItems="center" className="button_section">
-            <Button
-                variant="contained"
-                color="default"
-                size="large"
-                onClick={handleGameSection}
-                startIcon={<PlayArrow />}
-            >
-                Battleship
-            </Button>
+
+        <Grid container item xs={12} justify="center" alignItems="center">
+            <h1 className="title-home">BattleShip</h1>
+            <Grid container item xs={12} justify="center" alignItems="center" className="button_section">
+                <Button
+                    variant="contained"
+                    color="default"
+                    size="large"
+                    onClick={handleGameSection}
+                    startIcon={<PlayArrow />}
+                >
+                    Battleship
+                </Button>
+            </Grid>
         </Grid>
     )
 };

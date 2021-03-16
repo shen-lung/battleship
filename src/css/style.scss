@@ -9,6 +9,12 @@ body {
     background-image: url("/src/image/battle-1920x1080.jpg");
 }
 
+.title-home {
+    color: #efefef;
+    font-size: 90px;
+    margin-top: 100px;
+}
+
 .button {
     margin-bottom: 30px !important;
 }
@@ -22,6 +28,7 @@ body {
     border: 1px solid #afbaff;
     height: 410px;
     margin-left: 44px !important;
+    position: relative;
     width: 410px;
 }
 
@@ -33,9 +40,30 @@ body {
     width: 39px;
 }
 
-.button_section {
+.numbers-position {
+    margin-top: -39px;
+}
+.letter-position {
+    margin-top: 10px;
+    margin-left: -34px;
     position: absolute;
-    top: 50%;
+    top: 0;;
+}
+
+.number-cell {
+    color: $text-color;
+    display: inline-block;
+    font-weight: bold;
+    height: 39px;
+    text-align: center;
+    width: 41px;
+}
+
+.letter-cell {
+    color: $text-color;
+    font-weight: bold;
+    height: 41px;
+    text-align: center;
 }
 
 .ship-section {
@@ -50,6 +78,11 @@ body {
     height: 400px;
     background-color: #EEEEEE;
 }
+
+.ship-color {
+    background-color: #b7b7b7;
+}
+
 
 .ship-section--space {
     margin: 20px 0 !important;
