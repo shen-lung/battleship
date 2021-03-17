@@ -29,10 +29,10 @@ export default function SetupGame() {
     const [shipListDown, setShipListDown] = useState({});
     let [currentShip, setCurrentShip] = useState(0);
     let cellList = [];
-    console.log(currentShip);
-    console.log(elemCellList);
-    console.log(shipListDown);
-    console.log(elemCellListId);
+    // console.log(currentShip);
+    // console.log(elemCellList);
+    // console.log(shipListDown);
+    // console.log(elemCellListId);
 
     const handleShipByMe = () => {
         setShipByMeFlow(!shipByMe);
@@ -46,6 +46,84 @@ export default function SetupGame() {
     const handleShipOrientationVer = () => {
         setShipOrientation('v');
     }
+
+    const handleRandomSetup = () => {
+        setSetupBoard(!setupBoard);
+        let positionIdsList = [];
+        let shipOrientationId;
+        const shipOrientation = ['hor', 'ver']
+
+
+        for(let pos = 1; pos <= 100; pos++) positionIdsList.push(pos);
+
+        for(let count = 0; count < 10; count++) {
+            const shipLength = shipDetails[count].length;
+            let randomNumber = positionIdsList[Math.floor((Math.random() * positionIdsList.length) + 1) - 1];
+            let endPoint;
+            let isCellBusy;
+            let cellEndPoint = 0;
+            let isAllowed;
+            let shipCellAttr;
+            let elem;
+            shipOrientationId = shipOrientation[Math.floor((Math.random() * 2) + 1) - 1];
+
+            if(shipOrientationId === 'hor') {
+                endPoint = randomNumber + shipLength - 2;
+
+                do {
+                    cellEndPoint = randomNumber + shipLength - 1;
+                    isCellBusy = false;
+                    for(let posCellHorBusy = randomNumber; posCellHorBusy <= cellEndPoint; posCellHorBusy++) {
+                        if(elemCellListId.indexOf(posCellHorBusy) !== -1) {
+                            isCellBusy = true;
+                            positionIdsList.splice(posCellHorBusy - 1, 1);
+                        }
+                    }
+                    isAllowed = isCellBusy || (endPoint % 10 >= 0 && endPoint % 10 < shipLength - 1);
+                    if(isAllowed) {
+                        randomNumber = positionIdsList[Math.floor((Math.random() * positionIdsList.length) + 1) - 1];
+                        endPoint = randomNumber + shipLength - 2;
+                    }
+                }
+                while(isAllowed);
+                
+                for(let posCellHor = randomNumber; posCellHor <= cellEndPoint; posCellHor++) {
+                    shipCellAttr = `[shipcellid='${posCellHor}']`;
+                    elem = document.querySelector(shipCellAttr);
+                    elem.classList.add('ship-color');
+                    elemCellListId.push(posCellHor);
+                }
+                setElemCellListId(elemCellListId);
+            } else {
+                endPoint = (shipLength * 10) - 10;
+
+                do {
+                    cellEndPoint = randomNumber + ((shipLength - 1) * 10);
+                    isCellBusy = false;
+                    for(let posCellVerBusy = randomNumber; posCellVerBusy <= cellEndPoint; posCellVerBusy+=10) {
+                        if(elemCellListId.indexOf(posCellVerBusy) !== -1) {
+                            isCellBusy = true;
+                            positionIdsList.splice(posCellVerBusy - 1, 1);
+                        }
+                    }
+                    isAllowed = isCellBusy || !(randomNumber + endPoint <= 100);
+                    if(isAllowed) {
+                        randomNumber = positionIdsList[Math.floor((Math.random() * positionIdsList.length) + 1) - 1];
+                        endPoint = (shipLength * 10) - 10;
+                    }
+                }
+                while(isAllowed);
+
+                for(let posCellVer = randomNumber; posCellVer <= cellEndPoint; posCellVer+=10) {
+                    shipCellAttr = `[shipcellid='${posCellVer}']`;
+                    elem = document.querySelector(shipCellAttr);
+                    elem.classList.add('ship-color');
+                    elemCellListId.push(posCellVer);
+                }
+                setElemCellListId(elemCellListId);
+            }
+        };
+    };
 
     const handleMouseOver = (elem) => {
         if(!setupBoard) {
@@ -141,7 +219,7 @@ export default function SetupGame() {
             <Button variant="contained" color="primary" className="button" onClick={handleShipByMe}>
                 Set ship by me
             </Button>
-            <Button variant="contained" color="primary" className="button">
+            <Button variant="contained" color="primary" className="button" onClick={handleRandomSetup}>
                 Random
             </Button>
         </Grid>
@@ -156,7 +234,7 @@ export default function SetupGame() {
                 <Button variant="contained" color="primary" className="button" onClick={handleShipOrientationVer}>
                     Vertical ship
                 </Button>
-                <Button variant="contained" color="primary" className="button button-random">
+                <Button variant="contained" color="primary" className="button button-random" onClick={handleRandomSetup}>
                     Random
                 </Button>
             </Grid>
