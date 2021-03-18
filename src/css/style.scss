@@ -15,6 +15,23 @@ body {
     margin-top: 100px;
 }
 
+.title {
+    color: #efefef;
+}
+
+.title-bot {
+    margin-left: 136px !important;
+}
+
+.title-player {
+    margin-right: 16px !important;
+}
+
+.playe-board__head {
+    margin-top: -58px !important;
+    margin-bottom: 10px !important;
+}
+
 .button {
     margin-bottom: 30px !important;
 }
@@ -23,7 +40,16 @@ body {
     margin-top: 68px !important;
 }
 
-.player-board {
+.button-play {
+    margin-bottom: 10px !important;
+    background-color: #49b53f !important;
+}
+
+.button-back {
+    background-color: #6d6d6d !important;
+}
+
+.board {
     background-color: #1d1d1d;
     border: 1px solid #afbaff;
     height: 410px;
@@ -32,12 +58,42 @@ body {
     width: 410px;
 }
 
+.board-area {
+    margin-top: 20px !important;
+}
+
 .ship-cell {
-    border-right: 1px solid #8DEEEE;
+    border-bottom: 1px solid #7c7c7c;
+    border-right: 1px solid #7c7c7c;
     display: inline-block;
-    height: 39px;
+    height: 40px;
     margin-bottom: -4px;
-    width: 39px;
+    width: 40px;
+}
+
+.ship-cell__success {
+    background-color: #a52a2a;
+    border-bottom: 1px solid #7c7c7c;
+    border-right: 1px solid #7c7c7c;
+    display: inline-block;
+    height: 40px;
+    margin-bottom: -4px;
+    width: 40px;
+}
+
+.ship-cell__failed {
+    background-color: #676767;
+    border-bottom: 1px solid #7c7c7c;
+    border-right: 1px solid #7c7c7c;
+    display: inline-block;
+    height: 40px;
+    margin-bottom: -4px;
+    width: 40px;
+}
+
+.ship-bot-cell {
+    height: 40px;
+    width: 40px;
 }
 
 .numbers-position {
@@ -81,6 +137,13 @@ body {
 
 .ship-color {
     background-color: #b7b7b7;
+}
+
+.ship-bot-color {
+    background-color: #b7b7b7;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
 }
 
 
@@ -132,13 +195,6 @@ body {
     margin-bottom: 10px !important;
     margin-left: 38px !important;
     margin-right: 90px !important;
-}
-
-.ship-cell {
-    border-bottom: 1px solid #7c7c7c;
-    border-right: 1px solid #7c7c7c;
-    height: 40px;
-    width: 40px;
 }
 
 .ship-cell__selected {
