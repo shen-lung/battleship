@@ -28,7 +28,6 @@ export default function SetupGame() {
     const [setupDone, setSetupDone] = useState(false);
     const [elemCellList, setElemList] = useState([]);
     const [shipListDown, setShipListDown] = useState({});
-    const [currentShip, setCurrentShip] = useState(0);
     const [isWinner, setIsWinner] = useState(false);
     const [startGame, setStartGame] = useState(false);
     const [setupBotBoardProcess, setSetupBotBoardProcess] = useState(true);
@@ -36,6 +35,8 @@ export default function SetupGame() {
     const [positionIdsPlayerList, setPositionIdsPlayerList] = useState([]);
     const [elemCellListId, setElemCellListId] = useState([]);
     const [elemBotCellListId, setBotCellListId] = useState([]);
+    const [playButton, setPlayButton] = useState(false);
+    let [currentShip, setCurrentShip] = useState(0);
 
     useEffect(() => {
         if(setupBotBoardProcess) {
@@ -87,6 +88,12 @@ export default function SetupGame() {
     
     const handleShipOrientationVer = () => {
         setShipOrientation('v');
+    }
+
+    const handlePlayGame = () => {
+        setSetupBoard(false);
+        setSetupDone(true);
+        setStartGame(true);
     }
 
     const handleRandomSetup = () => {
@@ -177,6 +184,7 @@ export default function SetupGame() {
         let currentElem =elem.target;
         let shipCellId = Number(currentElem.getAttribute('shipcellid'));
         const ship = shipDetails[currentShip];
+
         const shipLength = ship.length;
         
         if(shipOrientation === 'h') {
@@ -245,10 +253,11 @@ export default function SetupGame() {
             return elemCellListId.indexOf(id) !== -1;
         })
 
-        if(isIdBusy.indexOf(true) === -1 || !elemCellListId.length) {
+        
+        if(isIdBusy.indexOf(true) === -1) {
             const ship = shipDetails[currentShip];
             const shipName = ship.name;
-    
+            
             elemCellList.map((elem) => {
                 elemCellListId.push(Number(elem.getAttribute('shipcellid')));
             })
@@ -259,6 +268,11 @@ export default function SetupGame() {
             });
             setCurrentShip(++currentShip);
             setElemList([]);
+        }
+
+        if(elemCellListId.length === 20) {
+            setPlayButton(true);
+            setSetupBoard(false);
         }
     }
 
@@ -285,6 +299,8 @@ export default function SetupGame() {
     );
 
     if(shipByMe) {
+        const isPlayButton = playButton ? false : true;
+
         setupSteps = (
             <Grid container item xs={5} direction="column">
                 <Button variant="contained" color="primary" className="button" onClick={handleShipOrientationHor}>
@@ -293,7 +309,7 @@ export default function SetupGame() {
                 <Button variant="contained" color="primary" className="button" onClick={handleShipOrientationVer}>
                     Vertical ship
                 </Button>
-                <Button variant="contained" color="primary" className="button-play button-random">
+                <Button variant="contained" disabled={isPlayButton} color="primary" className="button-play button-random" onClick={handlePlayGame}>
                     Play
                 </Button>
                 <Button variant="contained" color="primary" className="button-back">
@@ -410,8 +426,7 @@ export default function SetupGame() {
                 for(let posCellVer = randomNumber; posCellVer <= cellEndPoint; posCellVer+=10) {
                     elemBotCellListId.push(posCellVer);
                 }
-                setBotCellListId([1,2]);
-                // setBotCellListId(elemBotCellListId);
+                setBotCellListId(elemBotCellListId);
             }
         };
     };
