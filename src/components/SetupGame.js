@@ -59,6 +59,7 @@ export default function SetupGame() {
     const [elemCellList, setElemList] = useState([]);
     const [shipListDown, setShipListDown] = useState({});
     const [isWinner, setIsWinner] = useState(false);
+    const [isMiss, setIsMiss] = useState(false);
     const [startGame, setStartGame] = useState(false);
     const [setupBotBoardProcess, setSetupBotBoardProcess] = useState(true);
     const [isBotTurn, setIsBotTurn] = useState(false);
@@ -72,6 +73,7 @@ export default function SetupGame() {
     const [shipsDoneBot, setShispDoneBot] = useState(shipsDoneBotBase);
     let [currentShip, setCurrentShip] = useState(0);
     let [difficulty, setDifficultyLevel] = useState(0);
+    let [isInfinite, setIsInfinite] = useState(true);
 
     useEffect(() => {
         if(setupBotBoardProcess) {
@@ -116,6 +118,7 @@ export default function SetupGame() {
                 setStartGame(false);
             } else if(elemCellListId.length > 0 && difficulty === 0) {
                 setStartGame(false);
+                setIsMiss(true);
             } else if (elemCellListId.length === 0) {
                 setIsWinner(true);
                 setStartGame(false);
@@ -174,7 +177,6 @@ export default function SetupGame() {
             let isAllowed;
             let shipCellAttr;
             let elem;
-            let shipListStyle = {};
             shipOrientationId = shipOrientation[Math.floor((Math.random() * 2) + 1) - 1];
 
             if(shipOrientationId === 'hor') {
@@ -324,10 +326,14 @@ export default function SetupGame() {
         if(isIdBusy.indexOf(true) === -1) {
             const ship = shipDetails[currentShip];
             const shipName = ship.name;
+            let shipPositionId;
             
             elemCellList.map((elem) => {
-                elemCellListId.push(Number(elem.getAttribute('shipcellid')));
+                shipPositionId = Number(elem.getAttribute('shipcellid'));
+                elemCellListId.push(shipPositionId);
+                shipPositionsPlayer[shipPositionId] = ship;
             })
+            setShipPositionsPlayer(shipPositionsPlayer);
             setElemCellListId(elemCellListId);
             setShipListDown({
                 ...shipListDown,
@@ -344,7 +350,12 @@ export default function SetupGame() {
     }
 
     const handleDifficultyLable = (event) => {
-        setDifficultyLevel(event.target.value);
+        const difficultyId = event.target.value;
+
+        setDifficultyLevel(difficultyId);
+        if (difficultyId !== 0) {
+            setIsInfinite(false);
+        }
     }
 
     const playBoardTitles = (
@@ -402,10 +413,10 @@ export default function SetupGame() {
 
     let setupSteps = (
         <Grid container item xs={5} direction="column">
-            <Button variant="contained" color="primary" className="button" onClick={handleShipByMe}>
+            <Button variant="contained" color="primary" className="button set_by_me_button" onClick={handleShipByMe}>
                 Set ship by me
             </Button>
-            <Button variant="contained" color="primary" className="button" onClick={handleRandomSetup}>
+            <Button variant="contained" color="primary" className="button random_button" onClick={handleRandomSetup}>
                 Random
             </Button>
             <FormControl  variant="filled" className="label-section">
@@ -505,10 +516,10 @@ export default function SetupGame() {
             elemCell.classList.add('ship-cell__failed');
         }
         
-        if(!difficulty === 0) {
-            setDifficultyLevel(--difficulty);
-        } else {
+        if(isInfinite) {
             setDifficultyLevel(++difficulty);
+        } else {
+            setDifficultyLevel(--difficulty);
         }
 
         if(elemBotCellListId.length === 0 && difficulty >= 0) {
@@ -516,6 +527,7 @@ export default function SetupGame() {
             setStartGame(false);
         } else if(elemBotCellListId.length > 0 && difficulty === 0) {
             setStartGame(false);
+            setIsMiss(true);
         } else if (elemBotCellListId.length === 0) {
             setIsWinner(true);
             setStartGame(false);
@@ -687,7 +699,7 @@ export default function SetupGame() {
 
         if(isWinner) {
             titleName = '*** WINNER ***';
-        } else if(!startGame && !isWinner && setupBoard) {
+        } else if(!startGame && isMiss) {
             titleName = '*** GAME OVER ***';
         } else if(setupDone) {
             titleName = 'PLAYING...';
@@ -701,18 +713,19 @@ export default function SetupGame() {
     }
 
     const turnsSection = () => {
-        let section;
-
         if(setupDone) {
-            section = (
+            return (
                 <Grid container item xs={12} className='header-title__turns' justify="center" alignItems="center">
                     <h2 className="title">{difficulty}</h2>
                 </Grid>
             );
         }
+    }
+    
+    const resetSection = () => {
         
         if(setupDone && !startGame) {
-            section = (
+            return (
                 <Grid container item xs={12} className='header-title__reset' justify="center" alignItems="center">
                     <Button variant="contained" color="primary" onClick={resetDashboard}>
                         Try again
@@ -720,8 +733,6 @@ export default function SetupGame() {
                 </Grid>
             );
         }
-
-        return section;
     }
 
     return (
@@ -761,6 +772,7 @@ export default function SetupGame() {
                     </div>
                 </Grid>
                 {setupDone && shipStyles()}
+                {resetSection()}
             </Grid>
         </Grid>
     );
