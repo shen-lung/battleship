@@ -72,7 +72,7 @@ body {
 }
 
 .ship-cell__success {
-    background-color: #a52a2a;
+    background-color: #a52a2a !important;
     border-bottom: 1px solid #7c7c7c;
     border-right: 1px solid #7c7c7c;
     display: inline-block;
@@ -93,6 +93,43 @@ body {
 
 .ship-bot-cell {
     height: 40px;
+    width: 40px;
+}
+
+.ship-4 {
+    background-color: #52008a !important;
+    border-bottom: 1px solid #7c7c7c;
+    border-right: 1px solid #7c7c7c;
+    display: inline-block;
+    height: 40px;
+    margin-bottom: -4px;
+    width: 40px;
+}
+.ship-3 {
+    background-color: #008a7a !important;
+    border-bottom: 1px solid #7c7c7c;
+    border-right: 1px solid #7c7c7c;
+    display: inline-block;
+    height: 40px;
+    margin-bottom: -4px;
+    width: 40px;
+}
+.ship-2 {
+    background-color: #00538a !important;
+    border-bottom: 1px solid #7c7c7c;
+    border-right: 1px solid #7c7c7c;
+    display: inline-block;
+    height: 40px;
+    margin-bottom: -4px;
+    width: 40px;
+}
+.ship-1 {
+    background-color: #7f008a !important;
+    border-bottom: 1px solid #7c7c7c;
+    border-right: 1px solid #7c7c7c;
+    display: inline-block;
+    height: 40px;
+    margin-bottom: -4px;
     width: 40px;
 }
 
@@ -159,6 +196,17 @@ body {
     margin: 60px 0 !important;
 }
 
+.header-title__turns {
+    font-size: 24px !important;
+    margin-top: -46px !important;
+    margin-bottom: -32px !important;
+}
+
+.header-title__reset {
+    margin-top: -46px !important;
+    margin-bottom: -32px !important;
+}
+
 .ship-four {
     height: 40px;
     width: 160px;
@@ -186,8 +234,43 @@ body {
     border: 1px solid $ship-border-color;
 }
 
-.title {
+.ship-stylies {
+    margin-top: 40px !important;
+    margin-left: 100px !important;
+
+}
+
+.ship-styiles__title {
     color: $text-color;
+    margin-top: 10px;
+    margin-left: 18px;
+}
+
+.title {
+    color: $text-color !important;
+}
+
+.label-title {
+    color: #c1c1c1  !important;
+}
+
+.difficulty-label {
+    color: $text-color !important;
+}
+
+.MuiFilledInput-underline:before {
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    content: "\00a0" !important;
+    position: absolute !important;
+    transition: border-bottom-color 200ms cubic-bezier(0.4, 0, 0.2, 1) 0ms !important;
+    border-bottom: 1px solid #a0a0a0 !important;
+    pointer-events: none !important;
+}
+
+.label-section {
+    margin-top: 40px !important;
 }
 
 .letter-row {
