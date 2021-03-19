@@ -3,22 +3,52 @@ import React, { useEffect, useState } from 'react';
 import {
     Grid,
     Button,
+    Select,
+    MenuItem,
+    InputLabel,
+    FormControl,
 } from '@material-ui/core';
 
 
 export default function SetupGame() {
     let shipDetails = [
-        { "name": "ship_4_1", "length": 4 },
-        { "name": "ship_3_1", "length": 3 },
-        { "name": "ship_3_2", "length": 3 },
-        { "name": "ship_2_1", "length": 2 },
-        { "name": "ship_2_2", "length": 2 },
-        { "name": "ship_2_3", "length": 2 },
-        { "name": "ship_1_1", "length": 1 },
-        { "name": "ship_1_2", "length": 1 },
-        { "name": "ship_1_3", "length": 1 },
-        { "name": "ship_1_4", "length": 1 },
+        { 'name': 'ship_4_1', 'length': 4, 'style_class': 'ship-4'},
+        { 'name': 'ship_3_1', 'length': 3, 'style_class': 'ship-3' },
+        { 'name': 'ship_3_2', 'length': 3, 'style_class': 'ship-3' },
+        { 'name': 'ship_2_1', 'length': 2, 'style_class': 'ship-2' },
+        { 'name': 'ship_2_2', 'length': 2, 'style_class': 'ship-2' },
+        { 'name': 'ship_2_3', 'length': 2, 'style_class': 'ship-2' },
+        { 'name': 'ship_1_1', 'length': 1, 'style_class': 'ship-1' },
+        { 'name': 'ship_1_2', 'length': 1, 'style_class': 'ship-1' },
+        { 'name': 'ship_1_3', 'length': 1, 'style_class': 'ship-1' },
+        { 'name': 'ship_1_4', 'length': 1, 'style_class': 'ship-1' },
     ];
+
+    let shipsDonePlayerBase = {
+        'ship_4_1': [],
+        'ship_3_1': [],
+        'ship_3_2': [],
+        'ship_2_1': [],
+        'ship_2_2': [],
+        'ship_2_3': [],
+        'ship_1_1': [],
+        'ship_1_2': [],
+        'ship_1_3': [],
+        'ship_1_4': [],
+    }
+    
+    let shipsDoneBotBase = {
+        'ship_4_1': [],
+        'ship_3_1': [],
+        'ship_3_2': [],
+        'ship_2_1': [],
+        'ship_2_2': [],
+        'ship_2_3': [],
+        'ship_1_1': [],
+        'ship_1_2': [],
+        'ship_1_3': [],
+        'ship_1_4': [],
+    }
     const letterBoardList = ['A','B','C','D','E','F','G','H','I','J',];
     const numberBoardList = ['1','2','3','4','5','6','7','8','9','10',];
 
@@ -36,7 +66,12 @@ export default function SetupGame() {
     const [elemCellListId, setElemCellListId] = useState([]);
     const [elemBotCellListId, setBotCellListId] = useState([]);
     const [playButton, setPlayButton] = useState(false);
+    const [shipPositionsPlayer, setShipPositionsPlayer] = useState({});
+    const [shipPositionsBot, setShipPositionsBot] = useState({});
+    const [shipsDonePlayer, setShipsDonePlayer] = useState(shipsDonePlayerBase);
+    const [shipsDoneBot, setShispDoneBot] = useState(shipsDoneBotBase);
     let [currentShip, setCurrentShip] = useState(0);
+    let [difficulty, setDifficultyLevel] = useState(0);
 
     useEffect(() => {
         if(setupBotBoardProcess) {
@@ -46,35 +81,52 @@ export default function SetupGame() {
 
             setPositionIdsPlayerList(positionIdsList);
             handleBotRandomSetup();
+            console.log(elemBotCellListId); // The bot ship positions. Turn it on for testing. 
             setSetupBotBoardProcess(false);
         } else if(startGame && isBotTurn) {
             const randomNumber = positionIdsPlayerList[Math.floor((Math.random() * positionIdsPlayerList.length) + 1) - 1];
             const randomNumberIndex = positionIdsPlayerList.indexOf(randomNumberIndex);
-            const shipCellAttr = `[shipcellid='${randomNumber}']`;
-            const elemCell = document.querySelector(shipCellAttr);
+            let shipCellAttr = `[shipcellid='${randomNumber}']`;
+            let elemCell = document.querySelector(shipCellAttr);
             const index = elemCellListId.indexOf(randomNumber);
             
             if(index !== -1) {
-                elemCell.classList.add('ship-cell__success');
-                elemCell.classList.remove("ship-color");
+                let shipsDone = shipsDonePlayer[shipPositionsPlayer[randomNumber].name]
+                elemCell.classList.add(shipPositionsPlayer[randomNumber].style_class);
+                shipsDone.push(randomNumber);
                 elemCellListId.splice(index, 1);
                 setElemCellListId(elemCellListId);
+                setShipsDonePlayer(shipsDonePlayer);
 
-                if(elemCellListId.length === 0) {
-                    setIsWinner(true);
-                    setStartGame(false);
+                if(shipsDone.length === shipPositionsPlayer[randomNumber].length) {
+                    shipsDone.map((positionId) => {
+                        shipCellAttr = `[shipcellid='${positionId}']`;
+                        elemCell = document.querySelector(shipCellAttr);
+                        elemCell.classList.add('ship-cell__success');
+                        elemCell.classList.remove(shipPositionsPlayer[randomNumber].style_class);
+                    })
                 }
             } else {
                 elemCell.classList.add('ship-cell__failed');
                 elemCell.classList.remove("ship-color");
             }
-            // console.log(elemCellListId)
+
+            if(elemCellListId.length === 0 && difficulty >= 0) {
+                setIsWinner(true);
+                setStartGame(false);
+            } else if(elemCellListId.length > 0 && difficulty === 0) {
+                setStartGame(false);
+            } else if (elemCellListId.length === 0) {
+                setIsWinner(true);
+                setStartGame(false);
+            }
+
             positionIdsPlayerList.splice(randomNumberIndex, 1);
             setPositionIdsPlayerList(positionIdsPlayerList);
             setIsBotTurn(false);
         }
     });
-
+    
     let cellList = [];
 
     const handleShipByMe = () => {
@@ -88,6 +140,14 @@ export default function SetupGame() {
     
     const handleShipOrientationVer = () => {
         setShipOrientation('v');
+    }
+
+    const handleBack = () => {
+        setShipByMeFlow(!shipByMe);
+        setSetupBoard(!setupBoard);
+        setElemCellListId([]);
+        setShipListDown({});
+        setCurrentShip(0);
     }
 
     const handlePlayGame = () => {
@@ -105,7 +165,8 @@ export default function SetupGame() {
         for(let pos = 1; pos <= 100; pos++) positionIdsList.push(pos);
 
         for(let count = 0; count < 10; count++) {
-            const shipLength = shipDetails[count].length;
+            const ship = shipDetails[count];
+            const shipLength = ship.length;
             let randomNumber = positionIdsList[Math.floor((Math.random() * positionIdsList.length) + 1) - 1];
             let endPoint;
             let isCellBusy;
@@ -113,6 +174,7 @@ export default function SetupGame() {
             let isAllowed;
             let shipCellAttr;
             let elem;
+            let shipListStyle = {};
             shipOrientationId = shipOrientation[Math.floor((Math.random() * 2) + 1) - 1];
 
             if(shipOrientationId === 'hor') {
@@ -140,7 +202,10 @@ export default function SetupGame() {
                     elem = document.querySelector(shipCellAttr);
                     elem.classList.add('ship-color');
                     elemCellListId.push(posCellHor);
+                    shipPositionsPlayer[posCellHor] = ship;
+                    
                 }
+                setShipPositionsPlayer(shipPositionsPlayer);
                 setElemCellListId(elemCellListId);
             } else {
                 endPoint = (shipLength * 10) - 10;
@@ -167,7 +232,9 @@ export default function SetupGame() {
                     elem = document.querySelector(shipCellAttr);
                     elem.classList.add('ship-color');
                     elemCellListId.push(posCellVer);
+                    shipPositionsPlayer[posCellVer] = ship;
                 }
+                setShipPositionsPlayer(shipPositionsPlayer);
                 setElemCellListId(elemCellListId);
             }
         };
@@ -276,6 +343,10 @@ export default function SetupGame() {
         }
     }
 
+    const handleDifficultyLable = (event) => {
+        setDifficultyLevel(event.target.value);
+    }
+
     const playBoardTitles = (
         <Grid container item xs={12} spacing={4}  className="playe-board__head">
             <Grid container item xs={6} justify="center" alignItems="center">
@@ -286,150 +357,6 @@ export default function SetupGame() {
             </Grid>
         </Grid>
     );
-
-    let setupSteps = (
-        <Grid container item xs={5} direction="column">
-            <Button variant="contained" color="primary" className="button" onClick={handleShipByMe}>
-                Set ship by me
-            </Button>
-            <Button variant="contained" color="primary" className="button" onClick={handleRandomSetup}>
-                Random
-            </Button>
-        </Grid>
-    );
-
-    if(shipByMe) {
-        const isPlayButton = playButton ? false : true;
-
-        setupSteps = (
-            <Grid container item xs={5} direction="column">
-                <Button variant="contained" color="primary" className="button" onClick={handleShipOrientationHor}>
-                    Horizontal ship
-                </Button>
-                <Button variant="contained" color="primary" className="button" onClick={handleShipOrientationVer}>
-                    Vertical ship
-                </Button>
-                <Button variant="contained" disabled={isPlayButton} color="primary" className="button-play button-random" onClick={handlePlayGame}>
-                    Play
-                </Button>
-                <Button variant="contained" color="primary" className="button-back">
-                    Back
-                </Button>
-            </Grid>
-        );
-    }
-
-    for(let num = 1; num <= 100; num++) {
-        cellList.push(
-            (<div
-                key={num}
-                className="ship-cell"
-                shipcellid={num}
-                onMouseOver={handleMouseOver}
-                onMouseLeave={handleMouseLeave}
-                onMouseDown={handleMouseClick}
-            >
-            </div>)
-        );
-    }
-    
-    const handleBotMouseClick = (elem) => {
-        if(isBotTurn || !startGame) {
-            return;
-        }
-        elem.preventDefault();
-        const elemCell = elem.target;
-        const id = Number(elemCell.getAttribute('shipbotcellid'));
-        const index = elemBotCellListId.indexOf(id);
-        
-        if(index !== -1) {
-            elemCell.classList.add('ship-cell__success');
-            elemBotCellListId.splice(index, 1);
-            console.log(elemBotCellListId);
-            setBotCellListId(elemBotCellListId);
-
-            if(elemBotCellListId.length === 0) {
-                setIsWinner(true);
-                setStartGame(false);
-            }
-        } else {
-            elemCell.classList.add('ship-cell__failed');
-        }
-
-        setIsBotTurn(true);
-    }
-
-    const handleBotRandomSetup = () => {
-        if(startGame) {
-            return;
-        }
-        let positionIdsList = [];
-        let shipOrientationId;
-        const shipOrientation = ['hor', 'ver']
-    
-        for(let pos = 1; pos <= 100; pos++) positionIdsList.push(pos);
-    
-        for(let count = 0; count < 10; count++) {
-            const shipLength = shipDetails[count].length;
-            let randomNumber = positionIdsList[Math.floor((Math.random() * positionIdsList.length) + 1) - 1];
-            let endPoint;
-            let isCellBusy;
-            let cellEndPoint = 0;
-            let isAllowed;
-    
-            shipOrientationId = shipOrientation[Math.floor((Math.random() * 2) + 1) - 1];
-    
-            if(shipOrientationId === 'hor') {
-                endPoint = randomNumber + shipLength - 2;
-    
-                do {
-                    cellEndPoint = randomNumber + shipLength - 1;
-                    isCellBusy = false;
-                    for(let posCellHorBusy = randomNumber; posCellHorBusy <= cellEndPoint; posCellHorBusy++) {
-                        if(elemBotCellListId.indexOf(posCellHorBusy) !== -1) {
-                            isCellBusy = true;
-                            positionIdsList.splice(posCellHorBusy - 1, 1);
-                        }
-                    }
-                    isAllowed = isCellBusy || (endPoint % 10 >= 0 && endPoint % 10 < shipLength - 1);
-                    if(isAllowed) {
-                        randomNumber = positionIdsList[Math.floor((Math.random() * positionIdsList.length) + 1) - 1];
-                        endPoint = randomNumber + shipLength - 2;
-                    }
-                }
-                while(isAllowed);
-                
-                for(let posCellHor = randomNumber; posCellHor <= cellEndPoint; posCellHor++) {
-                    elemBotCellListId.push(posCellHor);
-                }
-                setBotCellListId(elemBotCellListId);
-            } else {
-                endPoint = (shipLength * 10) - 10;
-    
-                do {
-                    cellEndPoint = randomNumber + ((shipLength - 1) * 10);
-                    isCellBusy = false;
-                    for(let posCellVerBusy = randomNumber; posCellVerBusy <= cellEndPoint; posCellVerBusy+=10) {
-                        if(elemBotCellListId.indexOf(posCellVerBusy) !== -1) {
-                            isCellBusy = true;
-                            positionIdsList.splice(posCellVerBusy - 1, 1);
-                        }
-                    }
-                    isAllowed = isCellBusy || !(randomNumber + endPoint <= 100);
-                    if(isAllowed) {
-                        randomNumber = positionIdsList[Math.floor((Math.random() * positionIdsList.length) + 1) - 1];
-                        endPoint = (shipLength * 10) - 10;
-                    }
-                }
-                while(isAllowed);
-    
-                for(let posCellVer = randomNumber; posCellVer <= cellEndPoint; posCellVer+=10) {
-                    elemBotCellListId.push(posCellVer);
-                }
-                setBotCellListId(elemBotCellListId);
-            }
-        };
-    };
 
     const setupBotBoard = () => {
         let cellBotList = [];
@@ -473,16 +400,328 @@ export default function SetupGame() {
         );
     }
 
+    let setupSteps = (
+        <Grid container item xs={5} direction="column">
+            <Button variant="contained" color="primary" className="button" onClick={handleShipByMe}>
+                Set ship by me
+            </Button>
+            <Button variant="contained" color="primary" className="button" onClick={handleRandomSetup}>
+                Random
+            </Button>
+            <FormControl  variant="filled" className="label-section">
+                <InputLabel className="label-title">Choose the difficulty</InputLabel>
+                <Select
+                    labelId="demo-simple-select-label"
+                    id="demo-simple-select"
+                    value={difficulty}
+                    onChange={handleDifficultyLable}
+                    className="difficulty-label"
+                >
+                    <MenuItem value={0}>Easy: ∞ turns</MenuItem>
+                    <MenuItem value={100}>Medium: 100 turns</MenuItem>
+                    <MenuItem value={50}>Hard: 50 turns</MenuItem>
+                </Select>
+            </FormControl>
+        </Grid>
+    );
+
+    if(shipByMe) {
+        const isPlayButton = playButton ? false : true;
+
+        setupSteps = (
+            <Grid container item xs={5} direction="column">
+                <Button variant="contained" color="primary" className="button" onClick={handleShipOrientationHor}>
+                    Horizontal ship
+                </Button>
+                <Button variant="contained" color="primary" className="button" onClick={handleShipOrientationVer}>
+                    Vertical ship
+                </Button>
+                <Button variant="contained" disabled={isPlayButton} color="primary" className="button-play button-random" onClick={handlePlayGame}>
+                    Play
+                </Button>
+                <Button variant="contained" color="primary" className="button-back" onClick={handleBack}>
+                    Back
+                </Button>
+            </Grid>
+        );
+    }
+
+    for(let num = 1; num <= 100; num++) {
+        cellList.push(
+            (<div
+                key={num}
+                className="ship-cell"
+                shipcellid={num}
+                onMouseOver={handleMouseOver}
+                onMouseLeave={handleMouseLeave}
+                onMouseDown={handleMouseClick}
+            >
+            </div>)
+        );
+    }
+    
+    const handleBotMouseClick = (elem) => {
+        if(isBotTurn || !startGame) {
+            return;
+        }
+        
+        let elemCell = elem.target;
+        let elemClassList = elemCell.classList;
+        
+        if(
+            elemClassList.contains('ship-cell__failed') ||
+            elemClassList.contains('ship-cell__success') ||
+            elemClassList.contains('ship-4') ||
+            elemClassList.contains('ship-3') ||
+            elemClassList.contains('ship-2') ||
+            elemClassList.contains('ship-1')
+        ) {
+            return;
+        }
+        
+        let shipCellAttr;
+        const id = Number(elemCell.getAttribute('shipbotcellid'));
+        const index = elemBotCellListId.indexOf(id);
+
+        
+        if(index !== -1) {
+            let shipsDone = shipsDoneBot[shipPositionsBot[id].name]
+            elemCell.classList.add(shipPositionsBot[id].style_class);
+            shipsDone.push(id);
+            elemBotCellListId.splice(index, 1);
+            setBotCellListId(elemBotCellListId);
+            setShispDoneBot(shipsDoneBot);
+
+            if(shipsDone.length === shipPositionsBot[id].length) {
+                shipsDone.map((positionId) => {
+                    shipCellAttr = `[shipbotcellid='${positionId}']`;
+                    elemCell = document.querySelector(shipCellAttr);
+                    elemCell.classList.add('ship-cell__success');
+                    elemCell.classList.remove(shipPositionsBot[id].style_class);
+                })
+            }
+
+        } else {
+            elemCell.classList.add('ship-cell__failed');
+        }
+        
+        if(!difficulty === 0) {
+            setDifficultyLevel(--difficulty);
+        } else {
+            setDifficultyLevel(++difficulty);
+        }
+
+        if(elemBotCellListId.length === 0 && difficulty >= 0) {
+            setIsWinner(true);
+            setStartGame(false);
+        } else if(elemBotCellListId.length > 0 && difficulty === 0) {
+            setStartGame(false);
+        } else if (elemBotCellListId.length === 0) {
+            setIsWinner(true);
+            setStartGame(false);
+        }
+        
+        setIsBotTurn(true);
+    }
+
+    const handleBotRandomSetup = () => {
+        if(startGame) {
+            return;
+        }
+        let positionIdsList = [];
+        let shipOrientationId;
+        const shipOrientation = ['hor', 'ver']
+    
+        for(let pos = 1; pos <= 100; pos++) positionIdsList.push(pos);
+    
+        for(let count = 0; count < 10; count++) {
+            const ship = shipDetails[count];
+            const shipLength = ship.length;
+            let randomNumber = positionIdsList[Math.floor((Math.random() * positionIdsList.length) + 1) - 1];
+            let endPoint;
+            let isCellBusy;
+            let cellEndPoint = 0;
+            let isAllowed;
+    
+            shipOrientationId = shipOrientation[Math.floor((Math.random() * 2) + 1) - 1];
+    
+            if(shipOrientationId === 'hor') {
+                endPoint = randomNumber + shipLength - 2;
+    
+                do {
+                    cellEndPoint = randomNumber + shipLength - 1;
+                    isCellBusy = false;
+                    for(let posCellHorBusy = randomNumber; posCellHorBusy <= cellEndPoint; posCellHorBusy++) {
+                        if(elemBotCellListId.indexOf(posCellHorBusy) !== -1) {
+                            isCellBusy = true;
+                            positionIdsList.splice(posCellHorBusy - 1, 1);
+                        }
+                    }
+                    isAllowed = isCellBusy || (endPoint % 10 >= 0 && endPoint % 10 < shipLength - 1);
+                    if(isAllowed) {
+                        randomNumber = positionIdsList[Math.floor((Math.random() * positionIdsList.length) + 1) - 1];
+                        endPoint = randomNumber + shipLength - 2;
+                    }
+                }
+                while(isAllowed);
+                
+                for(let posCellHor = randomNumber; posCellHor <= cellEndPoint; posCellHor++) {
+                    elemBotCellListId.push(posCellHor);
+                    shipPositionsBot[posCellHor] = ship;
+                }
+                setShipPositionsBot(shipPositionsBot);
+                setBotCellListId(elemBotCellListId);
+            } else {
+                endPoint = (shipLength * 10) - 10;
+    
+                do {
+                    cellEndPoint = randomNumber + ((shipLength - 1) * 10);
+                    isCellBusy = false;
+                    for(let posCellVerBusy = randomNumber; posCellVerBusy <= cellEndPoint; posCellVerBusy+=10) {
+                        if(elemBotCellListId.indexOf(posCellVerBusy) !== -1) {
+                            isCellBusy = true;
+                            positionIdsList.splice(posCellVerBusy - 1, 1);
+                        }
+                    }
+                    isAllowed = isCellBusy || !(randomNumber + endPoint <= 100);
+                    if(isAllowed) {
+                        randomNumber = positionIdsList[Math.floor((Math.random() * positionIdsList.length) + 1) - 1];
+                        endPoint = (shipLength * 10) - 10;
+                    }
+                }
+                while(isAllowed);
+    
+                for(let posCellVer = randomNumber; posCellVer <= cellEndPoint; posCellVer+=10) {
+                    elemBotCellListId.push(posCellVer);
+                    shipPositionsBot[posCellVer] = ship;
+                }
+                setShipPositionsBot(shipPositionsBot);
+                setBotCellListId(elemBotCellListId);
+            }
+        };
+    };
+
+    const shipStyles = () => {
+        let ship_4 = [];
+        let ship_3 = [];
+        let ship_2 = [];
+        let ship_1 = [];
+
+        for(let num = 1; num <= 4; num++) {
+            ship_4.push(
+                (<div
+                    key={num}
+                    className="ship-4"
+                >
+                </div>)
+            );
+        }
+        for(let num = 1; num <= 3; num++) {
+            ship_3.push(
+                (<div
+                    key={num}
+                    className="ship-3"
+                >
+                </div>)
+            );
+        }
+        for(let num = 1; num <= 2; num++) {
+            ship_2.push(
+                (<div
+                    key={num}
+                    className="ship-2"
+                >
+                </div>)
+            );
+        }
+        for(let num = 1; num <= 1; num++) {
+            ship_1.push(
+                (<div
+                    key={num}
+                    className="ship-1"
+                >
+                </div>)
+            );
+        }
+
+        return (
+            <Grid container item xs={12} className="ship-stylies">
+               <Grid container item xs={3} justify="center" alignItems="center">
+                    {
+                        ship_4.map((elem) => {
+                            return elem;
+                        })
+                    }
+                     <span className="ship-styiles__title">4 x 1</span>
+                </Grid>
+                <Grid container item xs={3} justify="center" alignItems="center">
+                    {
+                        ship_3.map((elem) => {
+                            return elem;
+                        })
+                    }
+                     <span className="ship-styiles__title">3 x 2</span>
+                </Grid>
+                <Grid container item xs={3} justify="center" alignItems="center">
+                    {
+                        ship_2.map((elem) => {
+                            return elem;
+                        })
+                    }
+                     <span className="ship-styiles__title">2 x 3</span>
+                </Grid>
+                <Grid container item xs={3} justify="center" alignItems="center">
+                    {
+                        ship_1.map((elem) => {
+                            return elem;
+                        })
+                    }
+                     <span className="ship-styiles__title">1 x 4</span>
+                </Grid>
+            </Grid>
+        );
+    }
+
     const titleInfo = () => {
         let titleName = 'SETUP GAME';
 
         if(isWinner) {
             titleName = '*** WINNER ***';
+        } else if(!startGame && !isWinner && setupBoard) {
+            titleName = '*** GAME OVER ***';
         } else if(setupDone) {
             titleName = 'PLAYING...';
         }
-
+        
         return titleName;
+    }
+
+    const resetDashboard = () => {
+        window.location.reload();
+    }
+
+    const turnsSection = () => {
+        let section;
+
+        if(setupDone) {
+            section = (
+                <Grid container item xs={12} className='header-title__turns' justify="center" alignItems="center">
+                    <h2 className="title">{difficulty}</h2>
+                </Grid>
+            );
+        }
+        
+        if(setupDone && !startGame) {
+            section = (
+                <Grid container item xs={12} className='header-title__reset' justify="center" alignItems="center">
+                    <Button variant="contained" color="primary" onClick={resetDashboard}>
+                        Try again
+                    </Button>
+                </Grid>
+            );
+        }
+
+        return section;
     }
 
     return (
@@ -490,6 +729,7 @@ export default function SetupGame() {
             <Grid container item xs={12} className='header-title' justify="center" alignItems="center">
                 <h2 className="title">{titleInfo()}</h2>
             </Grid>
+            {turnsSection()}
             <Grid container item xs={12} spacing={6} className="board-area">
                 {setupDone && playBoardTitles}
                 <Grid container item xs={6} direction="column" alignItems="flex-end">
@@ -520,6 +760,7 @@ export default function SetupGame() {
                         </div>
                     </div>
                 </Grid>
+                {setupDone && shipStyles()}
             </Grid>
         </Grid>
     );

@@ -23,7 +23,7 @@ const setupSection = (handleGameSection) => {
                     onClick={handleGameSection}
                     startIcon={<PlayArrow />}
                 >
-                    Battleship
+                    Play
                 </Button>
             </Grid>
         </Grid>
@@ -52,7 +52,7 @@ export default function GameBoard() {
     if(isGameSetupSection) {
         currentSection = gameSetupSection();
     }
-    currentSection = gameSetupSection(); // REMOVE THIS LINE
+    
     return (
         <Grid container item xs={12}>
             {currentSection}
