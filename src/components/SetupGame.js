@@ -146,11 +146,19 @@ export default function SetupGame() {
     }
 
     const handleBack = () => {
+        let shipCellAttr;
+        let elem;
         setShipByMeFlow(!shipByMe);
         setSetupBoard(!setupBoard);
         setElemCellListId([]);
         setShipListDown({});
         setCurrentShip(0);
+
+        for(let pos = 1; pos <= 100; pos++) {
+            shipCellAttr = `[shipcellid='${pos}']`;
+            elem = document.querySelector(shipCellAttr);
+            elem.classList.remove('ship-color');
+        }
     }
 
     const handlePlayGame = () => {
