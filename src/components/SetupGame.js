@@ -9,49 +9,21 @@ import {
     FormControl,
 } from '@material-ui/core';
 
+import {
+    shipDetails,
+    shipsDonePlayerBase,
+    shipsDoneBotBase,
+    letterBoardList,
+    numberBoardList,
+} from '../constants';
+
+import {
+    shipStyles,
+    getCellList,
+} from '../utils';
+
 
 export default function SetupGame() {
-    let shipDetails = [
-        { 'name': 'ship_4_1', 'length': 4, 'style_class': 'ship-4'},
-        { 'name': 'ship_3_1', 'length': 3, 'style_class': 'ship-3' },
-        { 'name': 'ship_3_2', 'length': 3, 'style_class': 'ship-3' },
-        { 'name': 'ship_2_1', 'length': 2, 'style_class': 'ship-2' },
-        { 'name': 'ship_2_2', 'length': 2, 'style_class': 'ship-2' },
-        { 'name': 'ship_2_3', 'length': 2, 'style_class': 'ship-2' },
-        { 'name': 'ship_1_1', 'length': 1, 'style_class': 'ship-1' },
-        { 'name': 'ship_1_2', 'length': 1, 'style_class': 'ship-1' },
-        { 'name': 'ship_1_3', 'length': 1, 'style_class': 'ship-1' },
-        { 'name': 'ship_1_4', 'length': 1, 'style_class': 'ship-1' },
-    ];
-
-    let shipsDonePlayerBase = {
-        'ship_4_1': [],
-        'ship_3_1': [],
-        'ship_3_2': [],
-        'ship_2_1': [],
-        'ship_2_2': [],
-        'ship_2_3': [],
-        'ship_1_1': [],
-        'ship_1_2': [],
-        'ship_1_3': [],
-        'ship_1_4': [],
-    }
-    
-    let shipsDoneBotBase = {
-        'ship_4_1': [],
-        'ship_3_1': [],
-        'ship_3_2': [],
-        'ship_2_1': [],
-        'ship_2_2': [],
-        'ship_2_3': [],
-        'ship_1_1': [],
-        'ship_1_2': [],
-        'ship_1_3': [],
-        'ship_1_4': [],
-    }
-    const letterBoardList = ['A','B','C','D','E','F','G','H','I','J',];
-    const numberBoardList = ['1','2','3','4','5','6','7','8','9','10',];
-
     const [shipByMe, setShipByMeFlow] = useState(false);
     const [shipOrientation, setShipOrientation] = useState('h');
     const [setupBoard, setSetupBoard] = useState(false);
@@ -129,8 +101,6 @@ export default function SetupGame() {
             setIsBotTurn(false);
         }
     });
-    
-    let cellList = [];
 
     const handleShipByMe = () => {
         setShipByMeFlow(!shipByMe);
@@ -465,19 +435,7 @@ export default function SetupGame() {
         );
     }
 
-    for(let num = 1; num <= 100; num++) {
-        cellList.push(
-            (<div
-                key={num}
-                className="ship-cell"
-                shipcellid={num}
-                onMouseOver={handleMouseOver}
-                onMouseLeave={handleMouseLeave}
-                onMouseDown={handleMouseClick}
-            >
-            </div>)
-        );
-    }
+    let cellList = getCellList(handleMouseOver, handleMouseLeave, handleMouseClick);
     
     const handleBotMouseClick = (elem) => {
         if(isBotTurn || !startGame) {
@@ -620,87 +578,6 @@ export default function SetupGame() {
             }
         };
     };
-
-    const shipStyles = () => {
-        let ship_4 = [];
-        let ship_3 = [];
-        let ship_2 = [];
-        let ship_1 = [];
-
-        for(let num = 1; num <= 4; num++) {
-            ship_4.push(
-                (<div
-                    key={num}
-                    className="ship-4"
-                >
-                </div>)
-            );
-        }
-        for(let num = 1; num <= 3; num++) {
-            ship_3.push(
-                (<div
-                    key={num}
-                    className="ship-3"
-                >
-                </div>)
-            );
-        }
-        for(let num = 1; num <= 2; num++) {
-            ship_2.push(
-                (<div
-                    key={num}
-                    className="ship-2"
-                >
-                </div>)
-            );
-        }
-        for(let num = 1; num <= 1; num++) {
-            ship_1.push(
-                (<div
-                    key={num}
-                    className="ship-1"
-                >
-                </div>)
-            );
-        }
-
-        return (
-            <Grid container item xs={12} className="ship-stylies">
-               <Grid container item xs={3} justify="center" alignItems="center">
-                    {
-                        ship_4.map((elem) => {
-                            return elem;
-                        })
-                    }
-                     <span className="ship-styiles__title">4 x 1</span>
-                </Grid>
-                <Grid container item xs={3} justify="center" alignItems="center">
-                    {
-                        ship_3.map((elem) => {
-                            return elem;
-                        })
-                    }
-                     <span className="ship-styiles__title">3 x 2</span>
-                </Grid>
-                <Grid container item xs={3} justify="center" alignItems="center">
-                    {
-                        ship_2.map((elem) => {
-                            return elem;
-                        })
-                    }
-                     <span className="ship-styiles__title">2 x 3</span>
-                </Grid>
-                <Grid container item xs={3} justify="center" alignItems="center">
-                    {
-                        ship_1.map((elem) => {
-                            return elem;
-                        })
-                    }
-                     <span className="ship-styiles__title">1 x 4</span>
-                </Grid>
-            </Grid>
-        );
-    }
 
     const titleInfo = () => {
         let titleName = 'SETUP GAME';
